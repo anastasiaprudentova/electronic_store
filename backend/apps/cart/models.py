@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
+
 class Brand(models.Model):
     """Бренды производителей"""
     name = models.CharField('Название', max_length=255, unique=True)
@@ -139,7 +140,7 @@ class AttributeValue(models.Model):
 
         constraints = [
             models.CheckConstraint(
-                check=(
+                condition=(
                         (models.Q(text_value__isnull=False) &
                          models.Q(number_value__isnull=True) &
                          models.Q(boolean_value__isnull=True)) |
@@ -208,7 +209,7 @@ class Stock(models.Model):
 
         constraints = [
             models.CheckConstraint(
-                check=models.Q(reserved__lte=models.F('quantity')),
+                condition=models.Q(reserved__lte=models.F('quantity')),
                 name='reserved_lte_quantity'
             )
         ]

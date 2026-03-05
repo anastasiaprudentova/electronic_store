@@ -149,7 +149,7 @@ class Delivery(models.Model):
         ]
         constraints = [
             models.CheckConstraint(
-                check=(
+                condition=(
                     (models.Q(delivery_type='courier') &
                      models.Q(address__isnull=False) &
                      models.Q(pickup_point__isnull=True)) |
@@ -160,7 +160,7 @@ class Delivery(models.Model):
                 name='valid_delivery_type_fields'
             ),
             models.CheckConstraint(
-                check=(
+                condition=(
                     models.Q(delivered_at__isnull=True) |
                     models.Q(shipped_at__isnull=False, delivered_at__gte=models.F('shipped_at'))
                 ),

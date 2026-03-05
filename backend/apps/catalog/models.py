@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from apps.catalog.models import Product, Variation
+from apps.cart.models import Product, Variation
 from django.db.models import Q
 
 class Cart(models.Model):

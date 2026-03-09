@@ -4,22 +4,20 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q, Avg, Count
 
-class ProductMeneger(models.Manager):
+class ProductManager(models.Manager):
     """Менеджер для работы с товарами"""
     def in_stock(self):
         """Товары, которые есть в наличии"""
         return self.filter(
             variations__stocks__quantity__gt=0,
-            is_active=True,
+            is_active = True
         ).distinct()
 
     def new(self, days=30):
         """Товары, добавленные за последние N дней"""
-
-        cutoff_date = timezone.now() - timedelta(days=days)
-
+        current_date = timezone.now() - timedelta(days=days)
         return self.filter(
-            created_at__gte=cutoff_date,
+            created_at__gte=current_date,
             is_active=True
         ).distinct()
 
@@ -35,10 +33,8 @@ class ProductMeneger(models.Manager):
     def price_range(self, min_price=None, max_price=None):
         """Товары с ценой от min_price до max_price"""
         queryset = self.filter(is_active=True)
-
         if min_price is not None:
             queryset = queryset.filter(variations__price__gte=min_price)
-
         if max_price is not None:
             queryset = queryset.filter(variations__price__lte=max_price)
 
@@ -53,11 +49,13 @@ class ProductMeneger(models.Manager):
 
     def rating(self, min_rating=4):
         """Товары с рейтингом не ниже указанного"""
-        return self.filter(is_active=True).annotate(
-            avg_rating=Avg('reviews__rating')
+        return self.filter(
+            is_active=True,
+        ).annotate(
+            avg=Avg('reviews__rating')
         ).filter(
-            avg_rating__gte=min_rating
-        ).order_by('-avg_rating')
+            avg__gte=min_rating
+        ).order_by("-avg")
 
     def by_brand(self, brand_id):
         """Товары указанного бренда"""
@@ -75,14 +73,15 @@ class ProductMeneger(models.Manager):
 
     def without_reviews(self):
         """Товары без отзывов"""
-        return self.annotate(
-            reviews_count=Count('reviews')
-        ).filter(
-            reviews_count=0,
+        return self.filter(
             is_active=True
+        ).annotate(
+            count = Count('reviews')
+        ).filter(
+            count = 0
         )
 
-    def popular(self, min_orders=5):
+    def popular(self, min_orders=10):
         """Популярные товары (часто заказываемые)"""
         return self.filter(
             is_active=True,
@@ -90,7 +89,7 @@ class ProductMeneger(models.Manager):
             orders_count=Count('variations__order_items')
         ).filter(
             orders_count__gte=min_orders
-        ).order_by('-orders_count')
+        ).order_by('-count')
 
 class Brand(models.Model):
     """Бренды производителей"""
@@ -152,6 +151,8 @@ class Product(models.Model):
     description = models.TextField('Описание', blank=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
+
+    objects = ProductManager()
 
     class Meta:
         verbose_name = 'Товар'

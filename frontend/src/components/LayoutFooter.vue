@@ -62,7 +62,7 @@
             </div>
 
             <div class="copyright">
-                © 2026 Электрополис. Все права защищены. Denizer1305 & Anastasia_Qe
+                © 2026 Электрополис. Все права защищены. Denizer1305 & Anastasia_Qe & Mahina0409
             </div>
         </div>
     </footer>

@@ -1,0 +1,21 @@
+.dark {
+    --bg: #0a0c10;
+    --surface: #14181c;
+    --primary: #5fa3b0;
+    --primary-light: #1e2f36;
+    --primary-lightes: #2a3f48;
+    --text: #eef4f8;
+    --text-light: #a0b3bc;
+    --border: #2a343c;
+    --badge: #2a9d8f;
+    --rating-color: #ffb800;
+    --btn-text: #ffffff;
+    --overlay-light: rgba(255, 255, 255, 0.1);
+    --input-border: #ffffff;
+    --shadow-hover: rgba(95, 163, 176, 0.5);
+}
+
+.dark .toast {
+    background: var(--primary);
+    color: white;
+}

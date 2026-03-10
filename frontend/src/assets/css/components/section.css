@@ -1,0 +1,128 @@
+.hero {
+    background-color: var(--primary-light);
+    border-radius: 32px;
+    overflow: hidden;
+    transition: background-color 0.5s ease;
+}
+
+.hero-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 500px;
+}
+
+.hero-content {
+    flex: 1 1 50%;
+    padding: 60px 40px;
+    color: var(--text);
+}
+
+.hero-content h2 {
+    font-size: 42px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    max-width: 450px;
+    color: var(--text-light);
+}
+
+.hero-images {
+    flex: 1 1 50%;
+    position: relative;
+    min-height: 500px;
+}
+
+.hero-images img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 530px;
+    height: 550px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 60px 0 30px;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-align: center;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto 60px;
+    min-height: 700px;
+}
+
+.parent > div {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    border-radius: 32px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background-color: var(--surface);
+    box-shadow: var(--blur);
+}
+
+.parent > div:hover {
+    border-color: var(--primary-lightes);
+    transform: scale(1.02);
+    filter: brightness(1.02);
+}
+
+.parent img {
+    position: absolute;
+    display: block;
+    object-fit: contain;
+}
+
+.img-laptop { width: 572px; height: 500px; top: 0; left: 0; }
+.img-tablet { width: 451px; height: 560px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.img-watch { height: 100%; left: 0; bottom: 0; }
+.img-phone { width: 234px; height: 218px; left: 10%; top: 50%; transform: translateY(-50%); }
+
+
+.category-text {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 25px 20px 20px;
+    color: var(--text);
+    font-family: var(--font-family);
+    text-align: right;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(255,255,255,0.5);
+}
+
+.category-text h3 {
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    font-family: var(--third-family);
+}
+
+.category-text p {
+    font-size: 16px;
+    opacity: 0.95;
+    font-family: var(--font3);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin: 40px 0 60px;
+}

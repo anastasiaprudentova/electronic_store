@@ -5,7 +5,8 @@ from django.core.validators import RegexValidator
 class Address(models.Model):
     """Адреса доставки пользователей"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = 'addresses', verbose_name = 'Пользователь')
-    recipient_name = models.CharField('Телефон', max_length=11, validators = [
+    recipient_name = models.CharField('Получатель', max_length=255, blank=True)
+    phone = models.CharField('Телефон', max_length=20, blank=True, validators=[
         RegexValidator(
             regex=r'^\+?[0-9\-\s()]+$',
             message='Введите корректный номер телефона'
@@ -17,6 +18,7 @@ class Address(models.Model):
     apartment = models.CharField('Квартира', max_length=10, blank = True)
     postal_code = models.CharField('Индекс', max_length=10, blank = True)
     is_default = models.BooleanField('Основной адрес', default = True)
+
 
     class Meta:
         verbose_name = 'Адрес'

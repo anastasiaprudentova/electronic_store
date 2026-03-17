@@ -38,7 +38,6 @@
     border: 1px solid var(--input-border);
     border-radius: 30px;
     padding: 12px 27px;
-    width: 168px;
     height: 45px;
     box-shadow: var(--blur);
     background: var(--overlay-light);

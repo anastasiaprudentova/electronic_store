@@ -5,7 +5,7 @@
                 <div class="hero-content">
                     <h2>Новые телефоны уже здесь.</h2>
                     <p>Флагманские модели с мощными процессорами, улучшенными камерами и стильным дизайном. Успейте оценить инновации первыми!</p>
-                    <router-link to="#" class="btn">ПЕРЕЙТИ</router-link>
+                    <a href="#" class="btn">ПЕРЕЙТИ</a>
                 </div>
                 <div class="hero-images">
                     <img src="@/assets/image/phone-hero.webp" alt="Hero image">
@@ -21,7 +21,7 @@
                     <div class="category-text"><p>Ноутбуки</p><h3>Для продуктивной работы</h3></div>
                 </div>
                 <div class="div2 fade-in">
-                    <img class="img-watch" src="@/assets/image/wacth-catalog.webp" alt="watch">
+                    <img class="img-watch" src="@/assets/image/watch-catalog.webp" alt="watch">
                     <div class="category-text"><p>Часы</p><h3>Стиль и качество</h3></div>
                 </div>
                 <div class="div3 fade-in">
@@ -49,10 +49,10 @@
                         <span class="price">{{ product.price.toLocaleString() }} ₽</span>
                         <div class="product-actions">
                             <button class="action-btn add-to-cart" @click="addToCartHandler(product)" title="Добавить в корзину">
-                            <i class="fa-solid fa-cart-shopping"></i>
+                                <font-awesome-icon :icon="['fa', 'cart-shopping']"/>
                             </button>
                             <button class="action-btn add-to-favorite" @click="addToFavoriteHandler(product.name)" title="В избранное">
-                            <i class="fa-solid fa-heart"></i>
+                                <font-awesome-icon :icon="['fa', 'heart']"/>
                             </button>
                         </div>
                     </div>
@@ -65,7 +65,9 @@
             <h3 class="search-title">Не нашли нужный товар?</h3>
             <div class="search-field">
                 <input type="text" placeholder="Введите название...">
-                <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button type="button">
+                    <font-awesome-icon :icon="['fa', 'magnifying-glass']"/>
+                </button>
             </div>
             <div class="brand-tags">
                 <span class="tag" v-for="tag in tags" :key="tag">
@@ -101,6 +103,7 @@ import laptopCard from '@/assets/image/laptop-orders.webp';
 import watchCard from '@/assets/image/watch-orders.webp';
 import tabletCard from '@/assets/image/tablet-orders.webp';
 
+defineOptions({ name: 'MainPage' });
 
 const products = ref([
     {

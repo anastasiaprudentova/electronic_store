@@ -1,4 +1,4 @@
-import './assets/css/style.css'
+import '@/assets/css/style.css'
 import './assets/css/dark.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

@@ -62,15 +62,14 @@
             </div>
 
             <div class="copyright">
-                © 2026 Электрополис. Все права защищены. Denizer1305 & Anastasia_Qe & Mahina0409
+                © 2026 Электрополис. Все права защищены. Denizer1305 & Anastasia_Qe
             </div>
         </div>
     </footer>
 
     <div class="toast-container" id="toast-container"></div>
 </template>
-<script>
-export default {
-    name: 'LayoutFooter'
-}
+
+<script setup>
+    defineOptions({ name: 'LayoutFooter' });
 </script>

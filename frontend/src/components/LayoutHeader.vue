@@ -10,17 +10,17 @@
             <nav class="main-nav">
                 <div class="dropdown-container">
                     <a href="#" class="catalog-link" @click.prevent="toggleCatalog">
-                        Каталог <i class="fa-solid fa-chevron-down"></i>
+                        Каталог <font-awesome-icon :icon="['fa', 'chevron-down']"/>
                     </a>
                     <div class="dropdown-menu" :class="{ show: showCatalog }">
                         <div class="dropdown-header">Категории</div>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-mobile-screen-button"></i> Смартфоны</a>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-laptop"></i> Ноутбуки</a>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-tablet-screen-button"></i> Планшеты</a>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-clock"></i> Часы</a>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-headphones"></i> Аксессуары</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'mobile-screen-button']"/> Смартфоны</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'laptop']"/> Ноутбуки</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'tablet-screen-button']"/> Планшеты</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'clock']"/> Часы</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'headphones']"/> Аксессуары</a>
                         <div class="dropdown-divider"></div>
-                        <router-link to="#" class="dropdown-item"><i class="fa-solid fa-tag"></i> Все товары</router-link>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'tag']"/> Все товары</a>
                     </div>
                 </div>
                 <a href="#">Поддержка</a>
@@ -29,21 +29,21 @@
             <div class="user-actions">
                 <div class="header-search">
                     <input type="text" placeholder="Поиск товаров...">
-                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button><font-awesome-icon :icon="['fa', 'magnifying-glass']"/></button>
                 </div>
 
                 <button class="icon-btn" @click="toggleTheme" :title="isDark ? 'Светлая тема' : 'Темная тема'">
-                    <i :class="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+                    <font-awesome-icon :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']" />
                 </button>
 
                 <div class="dropdown-container">
                     <button class="icon-btn" @click.prevent="toggleCart" title="Корзина">
-                        <i class="fa-solid fa-cart-shopping"></i>
+                        <font-awesome-icon :icon="['fa', 'cart-shopping']"/>
                         <span v-if="totalItems > 0" class="cart-badge">{{ totalItems }}</span>
                     </button>
                     <div class="dropdown-menu" :class="{ show: showCart }">
                         <div class="dropdown-header">
-                            <i class="fa-solid fa-cart-shopping" style="margin-right: 8px;"></i> Корзина
+                            <font-awesome-icon :icon="['fa', 'cart-shopping']" style="margin-right: 8px;"/> Корзина
                         </div>
                         <div class="cart-preview">
                             <div v-if="cart.length === 0" class="cart-preview-empty">Корзина пуста</div>
@@ -55,36 +55,37 @@
                                         <div class="cart-preview-quantity">Количество: {{ item.quantity }}</div>
                                     </div>
                                     <button class="cart-preview-remove" @click="removeFromCart(item.id)" title="Удалить">
-                                        <i class="fa-solid fa-trash"></i>
+                                        <font-awesome-icon :icon="['fa', 'trash']"/>
                                     </button>
                                 </div>
                             </div>
                         <div class="dropdown-divider"></div>
-                        <router-link to="#" class="dropdown-item">
-                            <i class="fa-solid fa-arrow-right"></i> <span>Перейти в корзину</span>
-                        </router-link>
+                        <a href="#" class="dropdown-item">
+                            <font-awesome-icon :icon="['fa', 'arrow-right']"/><span>Перейти в корзину</span>
+                        </a>
                     </div>
                 </div>
 
                 <div class="dropdown-container">
                     <button class="icon-btn" @click.prevent="toggleUser" title="Профиль">
-                        <i class="fa-solid fa-user"></i>
+                        <font-awesome-icon :icon="['fa', 'user']"/>
                     </button>
                     <div class="dropdown-menu" :class="{ show: showUser }">
                         <div class="dropdown-header">
-                            <i class="fa-solid fa-user" style="margin-right: 8px;"></i> Аккаунт
+                            <font-awesome-icon :icon="['fa', 'user']" style="margin-right: 8px;"/> Аккаунт
                         </div>
-                        <router-link to="#" class="dropdown-item"><i class="fa-solid fa-id-card"></i> Профиль</router-link>
-                        <router-link to="#" class="dropdown-item"><i class="fa-solid fa-box"></i> Заказы</router-link>
-                        <router-link to="#" class="dropdown-item"><i class="fa-solid fa-heart"></i> Избранное</router-link>
-                        <router-link to="#" class="dropdown-item"><i class="fa-solid fa-gear"></i> Настройки</router-link>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'id-card']"/> Профиль</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'box']"/> Заказы</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'heart']"/> Избранное</a>
+                        <a href="#" class="dropdown-item"><font-awesome-icon :icon="['fa', 'gear']"/> Настройки</a>
                         <div class="dropdown-divider"></div>
                         <div class="geo-info">
-                            <i class="fa-solid fa-location-dot"></i>
+                            <font-awesome-icon :icon="['fa', 'location-dot']"/>
                             <span>{{ geoStatus }}</span>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item"><i class="fa-solid fa-sign-out-alt"></i> Выйти</a>
+                        <a href="#" class="dropdown-item">
+                            <font-awesome-icon :icon="['fa', 'sign-out-alt']"/>  Выйти</a>
                     </div>
                 </div>
             </div>

@@ -111,11 +111,10 @@
 }
 
 .price {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 500;
     color: var(--primary);
-    display: block;
-    margin-bottom: 16px;
+    margin: 0;
 }
 
 .product-actions {

@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PickupPoint, Order, OrderItem, Payment, Delivery
+from .models import PickupPoint, Order, OrderItem
+from apps.payment.admin import PaymentInline
+from apps.delivery.admin import DeliveryInline
 
 #Inline-классы
 class OrderItemInline(admin.TabularInline):
@@ -9,20 +11,6 @@ class OrderItemInline(admin.TabularInline):
     extra = 1
     fields = ('variation', 'quantity', 'price_per_unit', 'total_price')
     readonly_fields = ('price_per_unit', 'total_price')
-
-class PaymentInline(admin.StackedInline):
-    """Отображает платеж по заказу."""
-    model = Payment
-    extra = 1
-    fields = ('method', 'status', 'amount', 'paid_at')
-    can_delete = False
-
-class DeliveryInline(admin.TabularInline):
-    """Отображает доставку заказа."""
-    model = Delivery
-    extra = 1
-    fields = ('delivery_type', 'address', 'pickup_point', 'tracking_number', 'status')
-    can_delete = False
 
 @admin.register(PickupPoint)
 class PickupPointAdmin(admin.ModelAdmin):
@@ -117,17 +105,3 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'variation', 'quantity', 'total_price')
     list_filter = ('order__status',)
     search_fields = ('order__order_number', 'variation__sku')
-
-@admin.register(Payment)
-class PaymentAdmin(admin.ModelAdmin):
-    """Отображает платежи"""
-    list_display = ('order', 'method', 'status', 'amount', 'paid_at')
-    list_filter = ('status', 'method')
-    search_fields = ('order__order_number', 'transaction_id')
-
-@admin.register(Delivery)
-class DeliveryAdmin(admin.ModelAdmin):
-    """Отображает доставку"""
-    list_display = ('order', 'delivery_type', 'status', 'tracking_number', 'carrier')
-    list_filter = ('delivery_type', 'status', 'carrier')
-    search_fields = ('order__order_number', 'tracking_number')

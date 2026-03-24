@@ -1,11 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
 from django.contrib.auth.models import User
-from apps.users.models import Address
 from apps.catalog.models import Variation
-from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Q, F, Sum, Avg
 from apps.core.models import TimeStampedModel
 from .managers import OrderManager
 

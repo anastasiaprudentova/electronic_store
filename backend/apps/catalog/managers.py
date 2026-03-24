@@ -12,7 +12,7 @@ class ProductManager(models.Manager):
             is_active = True
         ).distinct()
 
-    def new(self, days=30):
+    def get_new_product(self, days=30):
         """Товары, добавленные за последние N дней"""
         current_date = timezone.now() - timedelta(days=days)
         return self.filter(
@@ -47,14 +47,18 @@ class ProductManager(models.Manager):
         )
 
     def rating(self, min_rating=4):
-        """Товары с рейтингом не ниже указанного"""
+        """
+        Товары с рейтингом не ниже указанного
+        Учитываются только проверенные отзывы
+        """
+
         return self.filter(
             is_active=True,
         ).annotate(
-            avg=Avg('reviews__rating')
+            avg_rating=Avg('reviews__rating', filter=models.Q(reviews__is_moderated=True))
         ).filter(
-            avg__gte=min_rating
-        ).order_by("-avg")
+            avg_rating__gte=min_rating
+        ).order_by('-avg_rating')
 
     def by_brand(self, brand_id):
         """Товары указанного бренда"""

@@ -1,10 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Q, Avg, Count, Sum, F
-from django.db.models.functions import Coalesce
-from django.db.models import Value
 from apps.catalog.models import Product
 from django.core.validators import MinValueValidator, MaxValueValidator
 from apps.core.models import TimeStampedModel

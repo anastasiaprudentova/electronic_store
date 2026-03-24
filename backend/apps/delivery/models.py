@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q, F
 from apps.orders.models import Order, PickupPoint
 
 class Delivery(models.Model):

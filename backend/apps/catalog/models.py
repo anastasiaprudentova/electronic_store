@@ -1,10 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
-from django.contrib.auth.models import User
-from django.utils import timezone
-from datetime import timedelta
 from apps.core.models import TimeStampedModel
-from django.db.models import Q, Avg, Count, Sum, F
 from .managers import ProductManager
 
 class Brand(models.Model):
@@ -65,6 +61,7 @@ class Product(TimeStampedModel):
     )
     name = models.CharField('Название', max_length=255, unique=True)
     description = models.TextField('Описание', blank=True)
+    is_active = models.BooleanField('Активен', default=True)
 
     objects = ProductManager()
 

@@ -1,61 +1,10 @@
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
 from django.contrib.auth.models import User
-from apps.users.models import Address
 from apps.catalog.models import Variation
-from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Q, F, Sum, Avg
+from apps.core.models import TimeStampedModel
+from .managers import OrderManager
 
-class OrderManager(models.Manager):
-    """Менеджер для работы с заказами"""
-    def created_today(self):
-        """Заказы, созданные сегодня"""
-        today = timezone.now().date()
-        return self.filter(created_at__date=today)
-
-    def by_user(self, user):
-        """Заказы конкретного пользователя"""
-        return self.filter(user=user)
-
-    def new(self):
-        """Новые заказы (статус 'new')"""
-        return self.filter(status='new')
-
-    def paid(self):
-        """Оплаченные заказы (статус 'paid')"""
-        return self.filter(status='paid')
-
-    def processing(self):
-        """Заказы в обработке (статус 'processing')"""
-        return self.filter(status='processing')
-
-    def last_days(self,days=7):
-        """Заказы за последние N дней"""
-        last_days = timezone.now().date() - timedelta(days=days)
-        return self.filter(created_at__gte=last_days)
-
-    def by_status(self,status):
-        """Заказы с указанным статусом"""
-        return self.filter(status=status)
-
-    def average_paid_order_value(self):
-        """Средняя сумма оплаченных заказов"""
-        result = self.filter(
-            status='paid'
-        ).aggregate(
-            avg_count=Avg('total_amount')
-        )
-        return result['avg_count'] or 0
-
-    def total_revenue(self):
-        """Общая выручка по оплаченным заказам"""
-        result = self.filter(
-            status='paid'
-        ).aggregate(
-            total_revenue=Sum('total_amount')
-        )
-        return result['total_revenue'] or 0
 
 class PickupPoint(models.Model):
     """Пункты выдачи заказов"""
@@ -78,7 +27,7 @@ class PickupPoint(models.Model):
     def __str__(self):
         return f"{self.name} ({self.city})"
 
-class Order(models.Model):
+class Order(TimeStampedModel):
     """Заказы"""
     STATUS_CHOICES = [
         ('new', 'Новый'),
@@ -96,7 +45,6 @@ class Order(models.Model):
     status = models.CharField('Статус', max_length=20, choices=STATUS_CHOICES, default='new')
     total_amount = models.DecimalField('Сумма заказа', max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     comment = models.TextField('Комментарий к заказу', blank = True)
-    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
 
     objects = OrderManager()
 
@@ -131,100 +79,3 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.variation.product.name} x{self.quantity}"
-
-class Payment(models.Model):
-    """Платежи по заказам"""
-    METHOD_CHOICES = [
-        ('card', 'Банковская карта'),
-        ('cash', 'Наличные'),
-    ]
-
-    STATUS_CHOICES = [
-        ('pending', 'Ожидает'),
-        ('completed', 'Завершён'),
-        ('failed', 'Ошибка'),
-        ('refunded', 'Возврат'),
-    ]
-
-    order = models.OneToOneField(Order, on_delete=models.PROTECT, related_name='payment', verbose_name='Заказ')
-    method = models.CharField('Способ оплаты', max_length=20, choices=METHOD_CHOICES)
-    status = models.CharField('Статус', max_length=20, choices=STATUS_CHOICES, default='pending')
-    transaction_id = models.CharField('ID транзакции', max_length=255, blank=True)
-    amount = models.DecimalField('Сумма', max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    paid_at = models.DateTimeField('Дата оплаты', null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Платёж'
-        verbose_name_plural = 'Платежи'
-        indexes = [
-            models.Index(fields=['order']),
-            models.Index(fields=['transaction_id']),
-        ]
-
-    def __str__(self):
-        return f"Платёж для {self.order.order_number}"
-
-class Delivery(models.Model):
-    """Доставка заказа"""
-    DELIVERY_TYPES = [
-        ('courier', 'Курьер'),
-        ('pickup', 'Пункт выдачи'),
-    ]
-
-    STATUS_CHOICES = [
-        ('pending', 'Ожидание'),
-        ('shipped', 'Отправлен'),
-        ('delivered', 'Доставлен'),
-    ]
-
-    order = models.OneToOneField(Order, on_delete=models.PROTECT, related_name='delivery', verbose_name='Заказ')
-    delivery_type = models.CharField('Тип доставки', max_length=20, choices=DELIVERY_TYPES)
-
-    # Для курьера
-    address = models.ForeignKey('users.Address', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Адрес доставки')
-
-    # Для ПВЗ
-    pickup_point = models.ForeignKey(PickupPoint, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пункт выдачи')
-
-    tracking_number = models.CharField('Трек-номер', max_length=255, blank=True)
-    carrier = models.CharField('Служба доставки', max_length=100, blank=True)
-    status = models.CharField('Статус доставки', max_length=20, choices=STATUS_CHOICES, default='pending')
-    shipped_at = models.DateTimeField('Дата отправки', null=True, blank=True)
-    delivered_at = models.DateTimeField('Дата доставки', null=True, blank=True)
-
-    class Meta:
-        verbose_name = 'Доставка'
-        verbose_name_plural = 'Доставки'
-        indexes = [
-            models.Index(fields=['order']),
-            models.Index(fields=['address']),
-            models.Index(fields=['pickup_point']),
-            models.Index(fields=['tracking_number']),
-        ]
-        constraints = [
-            models.CheckConstraint(
-                condition=(
-                    (models.Q(delivery_type='courier') &
-                     models.Q(address__isnull=False) &
-                     models.Q(pickup_point__isnull=True)) |
-                    (models.Q(delivery_type='pickup') &
-                     models.Q(address__isnull=True) &
-                     models.Q(pickup_point__isnull=False))
-                ),
-                name='valid_delivery_type_fields'
-            ),
-            models.CheckConstraint(
-                condition=(
-                    models.Q(delivered_at__isnull=True) |
-                    models.Q(shipped_at__isnull=False, delivered_at__gte=models.F('shipped_at'))
-                ),
-                name='delivered_at_gte_shipped_at'
-            )
-        ]
-
-    def __str__(self):
-        if self.delivery_type == 'courier' and self.address:
-            return f"Курьер: {self.address}"
-        elif self.delivery_type == 'pickup' and self.pickup_point:
-            return f"ПВЗ: {self.pickup_point.name}"
-        return f"Доставка для заказа {self.order.order_number}"

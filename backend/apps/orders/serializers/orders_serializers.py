@@ -10,14 +10,34 @@ class OrderItemSerializer(serializers.ModelSerializer):
     """
     product_name = serializers.CharField(source='variation.product.name', read_only=True)
     variation_info = VariationSerializer(source='variation', read_only=True)
+    product_slug = serializers.CharField(source='variation.product.slug', read_only=True)
+    product_image = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
         fields = [
-            'id', 'variation', 'variation_info', 'product_name',
+            'id', 'variation', 'variation_info', 'product_name', 'product_slug', 'product_image',
             'quantity', 'price_per_unit', 'total_price'
         ]
 
+    def get_product_image(self, obj):
+        """
+        Возвращает URL изображения товара для истории заказов
+        """
+        request = self.context.get('request')
+        product = obj.variation.product
+
+        main_gallery = product.gallery.filter(is_main=True).first()
+        if main_gallery and main_gallery.image:
+            url = main_gallery.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        first_image = product.gallery.first()
+        if first_image and first_image.image:
+            url = first_image.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        return None
 
 class OrderListSerializer(serializers.ModelSerializer):
     """

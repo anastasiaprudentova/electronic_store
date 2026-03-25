@@ -10,13 +10,37 @@ class WishlistSerializer(serializers.ModelSerializer):
     product = ProductListSerializer(read_only=True)
     product_id = serializers.IntegerField(source='product.id', read_only=True)
     product_name = serializers.CharField(source='product.name', read_only=True)
+    product_slug = serializers.CharField(source='product.slug', read_only=True)
+    product_image = serializers.SerializerMethodField()
 
-    class Meta:
+class Meta:
         model = Wishlist
         fields = [
-            'id', 'product', 'product_id', 'product_name', 'created_at'
+            'id', 'product', 'product_id', 'product_name', 'created_at', 'product_slug', 'product_image',
         ]
         read_only_fields = ['id', 'created_at']
+
+
+def get_product_image(self, obj):
+    """
+    Возвращает URL изображения товара для избранного
+    """
+    request = self.context.get('request')
+    product = obj.product
+
+    # Ищем главное изображение в галерее
+    main_gallery = product.gallery.filter(is_main=True).first()
+    if main_gallery and main_gallery.image:
+        url = main_gallery.image.url
+        return request.build_absolute_uri(url) if request else url
+
+    # Первое изображение в галерее
+    first_image = product.gallery.first()
+    if first_image and first_image.image:
+        url = first_image.image.url
+        return request.build_absolute_uri(url) if request else url
+
+    return None
 
 class WishlistListSerializer(serializers.ModelSerializer):
     """

@@ -8,6 +8,8 @@ class CartSerializer(serializers.ModelSerializer):
     """
     variation_id = serializers.IntegerField(source='variation.id', read_only=True)
     product_name = serializers.CharField(source='variation.product.name', read_only=True)
+    product_slug = serializers.CharField(source='variation.product.slug', read_only=True)
+    product_image = serializers.SerializerMethodField()
     price = serializers.DecimalField(source='variation.price', max_digits=10, decimal_places=2, read_only=True)
     sku = serializers.CharField(source='variation.sku', read_only=True)
 
@@ -16,12 +18,33 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = [
-            'id', 'variation_id', 'product_name',
+            'id', 'variation_id', 'product_name', 'product_slug', 'product_image'
             'sku', 'price', 'quantity', 'total'
         ]
 
     def get_total(self, obj):
         return obj.quantity * obj.variation.price
+
+    def get_product_image(self, obj):
+        """
+        Возвращает URL изображения товара для корзины
+        """
+        request = self.context.get('request')
+        product = obj.variation.product
+
+        # Ищем главное изображение в галерее
+        main_gallery = product.gallery.filter(is_main=True).first()
+        if main_gallery and main_gallery.image:
+            url = main_gallery.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        # Первое изображение в галерее
+        first_image = product.gallery.first()
+        if first_image and first_image.image:
+            url = first_image.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        return None
 
 class CartSummarySerializer(serializers.Serializer):
     """

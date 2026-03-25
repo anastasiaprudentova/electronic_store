@@ -1,7 +1,11 @@
+from PIL import Image
+from io import BytesIO
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
 from apps.core.models import TimeStampedModel
 from .managers import ProductManager
+from django.core.files.base import ContentFile
+from django.utils.html import format_html
 
 class Brand(models.Model):
     """Бренды производителей"""
@@ -62,6 +66,7 @@ class Product(TimeStampedModel):
     name = models.CharField('Название', max_length=255, unique=True)
     description = models.TextField('Описание', blank=True)
     is_active = models.BooleanField('Активен', default=True)
+    slug = models.SlugField('URL', max_length=255, unique=True, blank=True)
 
     objects = ProductManager()
 
@@ -223,3 +228,67 @@ class Stock(models.Model):
     def available(self):
         """Доступное количество (без резерва)"""
         return self.quantity-self.reserved
+
+class ProductImage(TimeStampedModel):
+    """
+    Галерея изображений товара
+    """
+    product = models.ForeignKey('Product', on_delete = models.CASCADE, related_name='gallery', verbose_name='Изображения товара')
+    image = models.ImageField('Изображение', upload_to='products/%Y/%m/%d/', help_text = 'Рекомендуемый размер: 1200x1200 px')
+    alt_text = models.CharField('Альтернативный текст', max_length=255, blank=True)
+    order = models.PositiveIntegerField('Порядок', default=0, help_text='Чем меньше число, тем выше изображение')
+    is_main = models.BooleanField('Главное изображение', default=False, help_text='Будет использоваться как основное фото товара')
+
+    class Meta:
+        verbose_name = 'Изображение товара'
+        verbose_name_plural = 'Галерея товаров'
+        ordering = ['order', 'created_at']
+        indexes = [
+            models.Index(fields=['product']),
+            models.Index(fields=['order']),
+        ]
+
+    def __str__(self):
+        return f"{self.product.name} - {self.order}"
+
+    def save(self, *args, **kwargs):
+        if self.image and not hasattr(self.image, '_processed'):
+            self._compress_image()
+        super().save(*args, **kwargs)
+
+    def _compress_image(self):
+        """Сжатие изображения"""
+        try:
+            img = Image.open(self.image)
+
+            if img.mode in ('RGBA', 'LA', 'P'):
+                rgb_img = Image.new('RGB', img.size, (255, 255, 255))
+                rgb_img.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                img = rgb_img
+
+            max_size = 1200
+            if img.height > max_size or img.width > max_size:
+                img.thumbnail((max_size, max_size))
+
+            output = BytesIO()
+            img.save(output, format='JPEG', quality=85, optimize=True)
+            output.seek(0)
+
+            self.image.save(
+                f"{self.product.slug}_{self.order}.jpg",
+                ContentFile(output.read()),
+                save=False
+            )
+            setattr(self.image, '_processed', True)
+
+        except Exception as e:
+            print(f"Ошибка: {e}")
+
+    def admin_thumbnail(self):
+        if self.image:
+            return format_html(
+                '<img src="{}" width="50" height="50" style="object-fit: cover;" />',
+                self.image.url
+            )
+        return "Нет фото"
+    admin_thumbnail.short_description = 'Превью'

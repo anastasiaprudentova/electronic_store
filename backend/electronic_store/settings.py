@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.payment',
     'apps.delivery',
+    'apps.feedback',
 ]
 
 MIDDLEWARE = [

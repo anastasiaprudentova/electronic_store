@@ -1,0 +1,107 @@
+.icon-btn {
+    background: var(--bg);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    box-shadow: var(--blur);
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.icon-btn i {
+    font-size: 19px;
+    color: var(--text-light);
+    transition: color 0.3s ease;
+}
+
+.icon-btn:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary-light);
+}
+
+.icon-btn:hover i {
+    color: var(--primary);
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid var(--input-border);
+    border-radius: 30px;
+    padding: 12px 27px;
+    height: 45px;
+    box-shadow: var(--blur);
+    background: var(--overlay-light);
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 120%;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--btn-text);
+}
+
+.btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 30px var(--shadow-hover);
+}
+
+.action-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px 0;
+}
+
+.action-btn i {
+    color: var(--text-light);
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.action-btn:hover {
+    background: var(--primary-lightes);
+    border-color: var(--primary-lightes);
+    color: white;
+}
+
+.action-btn:hover i {
+    color: white;
+}
+
+.subscribe-form button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.subscribe-form button:hover {
+    background: #1f4953;
+    transform: translateY(-2px);
+}

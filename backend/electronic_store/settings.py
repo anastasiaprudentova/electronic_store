@@ -37,16 +37,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
+    'corsheaders',
 
     'apps.catalog',
     'apps.cart',
     'apps.orders',
+    'apps.users',
+    'apps.wishlist',
+    'apps.reviews',
+    'apps.core',
+    'apps.payment',
+    'apps.delivery',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -54,6 +64,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'electronic_store.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
 
 TEMPLATES = [
     {
@@ -78,8 +93,12 @@ WSGI_APPLICATION = 'electronic_store.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'electronic_store_db',
+        'USER': 'shop_user',
+        'PASSWORD': 'electronic',
+        'HOST': 'localhost',
+        'PORT': '5433',
     }
 }
 
@@ -106,9 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

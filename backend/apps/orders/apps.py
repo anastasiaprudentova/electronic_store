@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class OrdersConfig(AppConfig):
-    name = 'orders'
+    name = 'apps.orders'
+    verbose_name = 'Заказы'

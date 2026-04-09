@@ -1,0 +1,75 @@
+:root {
+    --bg: #ffffff;
+    --surface: #f9fafc;
+    --primary: #2e5f6b;       
+    --primary-light: #e5f0f3;
+    --primary-lightes: #8ba3a9da;
+    --text: #1e2b2f;
+    --text-light: #5e6f75;
+    --border: #e2e8f0;
+    --badge: #1FC1C1;
+    --rating-color: #ffb800;
+    --btn-text: #000000;
+    --overlay-light: rgba(255, 255, 255, 0.05);
+    --input-border: #ffffff;
+    --shadow-hover: rgba(46, 95, 107, 0.4);
+
+    --font-family: 'Inter', sans-serif;
+    --second-family: "Alegreya Sans", sans-serif;
+    --third-family: "Readex Pro", sans-serif;
+    --font3: "PT Sans", sans-serif;
+
+    --blur: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    --back-input: rgba(255, 255, 255, 0.05);
+    --shadow: 0 0 0 4px rgba(74,154,176,0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-family);
+    line-height: 1.5;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: var(--primary-light);
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--text);
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.empty-state h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text);
+}

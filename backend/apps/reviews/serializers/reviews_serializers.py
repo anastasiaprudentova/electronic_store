@@ -8,12 +8,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
     user_email = serializers.EmailField(source='user.email', read_only=True)
     product_name = serializers.CharField(source='product.name', read_only=True)
+    product_slug = serializers.CharField(source='product.slug', read_only=True)
+    product_image = serializers.SerializerMethodField()
     rating_stars = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
         fields = [
-            'id', 'user', 'user_name', 'user_email', 'product', 'product_name',
+            'id', 'user', 'user_name', 'user_email', 'product', 'product_name', 'product_slug', 'product_image',
             'rating', 'rating_stars', 'comment', 'advantages', 'disadvantages', 'created_at','updated_at', 'is_moderated'
         ]
         read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'is_moderated']
@@ -21,6 +23,24 @@ class ReviewSerializer(serializers.ModelSerializer):
     def get_rating_stars(self, obj):
         return obj.rating_stars
 
+    def get_product_image(self, obj):
+        """
+        Возвращает URL изображения товара для отзыва
+        """
+        request = self.context.get('request')
+        product = obj.product
+
+        main_gallery = product.gallery.filter(is_main=True).first()
+        if main_gallery and main_gallery.image:
+            url = main_gallery.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        first_image = product.gallery.first()
+        if first_image and first_image.image:
+            url = first_image.image.url
+            return request.build_absolute_uri(url) if request else url
+
+        return None
 
 class ReviewListSerializer(serializers.ModelSerializer):
     """

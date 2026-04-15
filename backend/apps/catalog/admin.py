@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import (Brand, Category, Product, AttributeValue, Attribute, Variation, Stock)
+from .models import (Brand, Category, Product, ProductImage, AttributeValue, Attribute, Variation, Stock)
 
 #Inline-классы
 class AttributeValueInline(admin.TabularInline):
@@ -23,6 +23,22 @@ class StockInline(admin.TabularInline):
     extra = 1
     fields = ('warehouse_id', 'quantity', 'reserved', 'available')
     readonly_fields = ('available',)
+
+class ProductImageInline(admin.TabularInline):
+    """Галерея в карточке товара"""
+    model = ProductImage
+    extra = 3
+    fields = ('image', 'alt_text', 'order', 'is_main', 'admin_thumbnail')
+    readonly_fields = ('admin_thumbnail',)
+
+    def admin_thumbnail(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="50" height="50" style="object-fit: cover;" />',
+                obj.image.url
+            )
+        return "Нет фото"
+    admin_thumbnail.short_description = 'Превью'
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
@@ -58,7 +74,7 @@ class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at') # поля, которые нельзя редактировать
     ordering = ('-created_at',)
 
-    inlines = [AttributeValueInline, VariationInline]
+    inlines = [ProductImageInline, AttributeValueInline, VariationInline]
     fieldsets = (('Основная информация', {'fields': ('name', 'description')}), ('Связи', {'fields': ('brand', 'category')}), ('Даты', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse')}))
     def variation_count(self, obj):
         """Показывает количество вариаций у товара"""
@@ -69,6 +85,14 @@ class ProductAdmin(admin.ModelAdmin):
         return 0
 
     variation_count.short_description = 'Вариаций'
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    """Отдельная админка для галереи"""
+    list_display = ('id', 'product', 'admin_thumbnail', 'order', 'is_main')
+    list_filter = ('product', 'is_main')
+    list_editable = ('order', 'is_main')
+    search_fields = ('product__name', 'alt_text')
 
 @admin.register(Attribute)
 class AttributeAdmin(admin.ModelAdmin):
